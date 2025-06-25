@@ -1,14 +1,15 @@
 import React, { useEffect, useRef } from "react";
 import assets, { messagesDummyData } from "../assets/assets";
+import { formatMessageTime } from "../lib/utils";
 
 // ChatContainer displays the chat area if a user is selected
 const ChatContainer = ({ selectedUser, setSelectedUser }) => {
   const scrollEnd = useRef();
   useEffect(() => {
-    if(scrollEnd.current){
-      scrollEnd.current.scrollIntoView({behavior: "smooth"})
+    if (scrollEnd.current) {
+      scrollEnd.current.scrollIntoView({ behavior: "smooth" });
     }
-  },[])
+  }, []);
   return selectedUser ? (
     // Main chat container when a user is selected
     <div className="h-full overflow-scroll relative backdrop-blur-lg">
@@ -74,14 +75,34 @@ const ChatContainer = ({ selectedUser, setSelectedUser }) => {
                 }
                 alt=""
               />
-              <p className="text-gray-500"> {msg.createdAt} </p>
+              {/* --------- Return Hour and Min ----- */}
+              <p className="text-gray-500">
+                {" "}
+                {formatMessageTime(msg.createdAt)}{" "}
+              </p>
             </div>
           </div>
         ))}
-        <div ref={scrollEnd} >
-
+        <div ref={scrollEnd}></div>
+      </div>
+      {/* ---------------Bottom Area ----------- */}
+      <div className="absolute bottom-8 left-8 right-8 flex items-center gap-3 p-3 ">
+        <div className="flex-1 flex items-center bg-gray-100/12 px-3 rounded-full  ">
+          <input
+            type="text"
+            placeholder="send a message "
+            className="flex-1 text-sm p-3 border-none rounded-lg outline-none text-white placeholder-gray-400  "
+          />
+          <input type="file" id="image" accept="image/png,image/jpeg" hidden />
+          <label htmlFor="image">
+            <img
+              src={assets.gallery_icon}
+              alt=""
+              className="w-5 mr-2 cursor-pointer "
+            />
+          </label>
         </div>
-
+        <img src={assets.send_button} alt="" className="w-7 cursor-pointer" />
       </div>
     </div>
   ) : (
