@@ -1,3 +1,4 @@
+import cloudinary from "../lib/cloudinary.js";
 import User from "../models/userModel.js";
 
 export const signup = async (req, res) => {
@@ -51,4 +52,37 @@ export const login = async (req, res) => {
       console.log(error.message);
       res.status(500).json({ success: false, message: error.message });
     }
+};
+
+export const updateProfile = async (req, res) => {
+    try {
+      const { profilePic, bio, fullName } = req.body;
+      const { userId } = req.params; 
+  
+      let updatedData = { bio, fullName };
+  
+      if (profilePic) {
+        const upload = await cloudinary.uploader.upload(profilePic, {
+          folder: "chatbuddy-profile",
+        });
+        updatedData.profilePic = upload.secure_url;
+      }
+  
+      const updatedUser = await User.findByIdAndUpdate(userId, updatedData, {
+        new: true,
+      });
+  
+      res.status(200).json({
+        success: true,
+        updatedUser,
+        message: "Profile updated successfully",
+      });
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).json({
+        success: false,
+        message: "Profile update failed",
+      });
+    }
   };
+  
