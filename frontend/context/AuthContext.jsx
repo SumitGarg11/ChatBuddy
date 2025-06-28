@@ -108,6 +108,9 @@ export const AuthProvider = ({ children }) => {
     authUser,
     onlineUsers,
     socket,
+    login,
+    logout,
+    updateProfile
   };
 
   return (
