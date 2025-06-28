@@ -4,24 +4,26 @@ import bcrypt from "bcryptjs";
 import cloudinary from "../lib/cloudinary.js";
 
 export const signup = async (req, res) => {
+  console.log("Request body:", req.body);
   const { fullname, email, password, bio } = req.body;
   try {
-    if (!fullName || !email || !password || !bio) {
+    if (!fullname || !email || !password || !bio) {
       return res.json({ success: false, message: "Missing Details" });
     }
     const user = await User.findOne({ email });
     if (user) {
       return res.json({ success: false, message: "Account already exists" });
     }
-    const salt = await bcrypt.getSalt(10);
-    const hanshedPassword = await bcrypt.hash(password, salt);
+    const salt = await bcrypt.genSalt(10); // correct
+    const hashedPassword = await bcrypt.hash(password, salt);
 
     const newUser = await User.create({
-      fullName,
+      fullname,
       email,
-      password: hanshedPassword,
+      password: hashedPassword,
       bio,
     });
+
     const token = generateToken(newUser._id);
     res.json({
       success: true,
@@ -46,7 +48,7 @@ export const login = async (req, res) => {
     }
     const token = generateToken(userData._id);
 
-    res.json({ suceess: true, userData, token, message: "Login Successful" });
+    res.json({ success: true, userData, token, message: "Login Successful" });
   } catch (error) {
     console.log(error.message);
     res.json({ success: false, message: error.message });
@@ -61,14 +63,16 @@ export const checkAuth = (req, res) => {
 
 export const updateProfile = async (req, res) => {
   try {
-    const { profilePic, bio, fullName } = res.body;
+    const { profilePic, bio, fullname } = req.body;
+    console.log("Incoming update:", req.body);
+
     const userId = req.user._id;
     let updatedUser;
 
     if (!profilePic) {
       updatedUser = await User.findByIdAndUpdate(
         userId,
-        { bio, fullName },
+        { bio, fullname },
         { new: true }
       );
     } else {
@@ -76,13 +80,13 @@ export const updateProfile = async (req, res) => {
 
       updatedUser = await User.findByIdAndUpdate(
         userId,
-        { profilePic: upload.secure_url, bio, fullName },
+        { profilePic: upload.secure_url, bio, fullname },
         { new: true }
       );
     }
-    res.json({ suceess: true, user: updatedUser });
+    res.json({ success: true, user: updatedUser });
   } catch (error) {
     console.log(error.message);
-    res.json({ suceess: false, user: error.message });
+    res.json({ success: false, message: error.message });
   }
 };

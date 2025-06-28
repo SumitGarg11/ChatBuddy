@@ -11,7 +11,6 @@ axios.defaults.baseURL = backendUrl;
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  
   const [token, setToken] = useState(localStorage.getItem("token"));
   const [authUser, setAuthUser] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
@@ -21,7 +20,7 @@ export const AuthProvider = ({ children }) => {
   const checkAuth = async () => {
     try {
       const { data } = await axios.get("/api/auth/check");
-      
+
       if (data.success) {
         setAuthUser(data.user);
         connectSocket(data.user);
@@ -34,8 +33,9 @@ export const AuthProvider = ({ children }) => {
   // Login function to authenticate and store token
   const login = async (state, credentials) => {
     try {
+      console.log("Sending signup data:", credentials);
       const { data } = await axios.post(`/api/auth/${state}`, credentials);
-      
+
       if (data.success) {
         setAuthUser(data.userData);
         connectSocket(data.userData);
@@ -48,7 +48,6 @@ export const AuthProvider = ({ children }) => {
       } else {
         toast.success(data.message);
       }
-
     } catch (error) {
       console.log(error.message);
     }
@@ -56,6 +55,7 @@ export const AuthProvider = ({ children }) => {
 
   // Logout function to handle user logout and socket disconnection
   const logout = async () => {
+    console.log("Logout clicked");
     localStorage.removeItem("token");
     setToken(null);
     setAuthUser(null);
@@ -63,19 +63,19 @@ export const AuthProvider = ({ children }) => {
     axios.defaults.headers.common["token"] = null;
     toast.success("Logged out successfully");
     socket.disconnect();
-  }
+  };
   // Update profile function to handle user profile updates
   const updateProfile = async (body) => {
     try {
-       const {data} = await axios.put("/api/auth/update-profile", body);
-       if(data.success) {
+      const { data } = await axios.put("/api/auth/update-profile", body);
+      if (data.success) {
         setAuthUser(data.user);
-        toast.success("Profile updated successfully")
-       }
-    } catch ( error ) {
-      toast.error(error.message)
+        toast.success("Profile updated successfully");
+      }
+    } catch (error) {
+      toast.error(error.message);
     }
-  }
+  };
   // Connect socket and listen for online users
   const connectSocket = (userData) => {
     if (!userData || socket?.connected) return;
@@ -110,12 +110,8 @@ export const AuthProvider = ({ children }) => {
     socket,
     login,
     logout,
-    updateProfile
+    updateProfile,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

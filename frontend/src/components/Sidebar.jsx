@@ -74,13 +74,13 @@ const Sidebar = ({ selectedUser, setSelectedUser }) => {
             {/* User avatar */}
             <img
               src={user?.profilePic || assets.avatar_icon}
-              alt={`${user.fullName}'s avatar`}
+              alt={`${user.fullname}'s avatar`}
               className="w-[35px] aspect-[1/1] rounded-full"
             />
 
             {/* User name and online/offline status */}
             <div className="flex flex-col leading-5">
-              <p>{user.fullName}</p>
+              <p>{user.fullname}</p>
               <span
                 className={`text-xs ${
                   index < 3 ? "text-green-400" : "text-neutral-400"

@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
 import assets, { imagesDummyData } from "../assets/assets";
+import { AuthContext } from "../../context/AuthContext";
 
 const RightSideBar = ({ selectedUser, setSelectedUser }) => {
+  
   return (
     selectedUser && (
       <div
@@ -36,8 +38,11 @@ const RightSideBar = ({ selectedUser, setSelectedUser }) => {
             ))}
           </div>
         </div>
-        <button className="absolute bottom-5 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-400 to-violet-600 text-white border-none text-sm font-light py-2 px-20 rounded-full cursor-pointer  ">
-        Logout
+        <button
+          
+          className="absolute bottom-5 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-400 to-violet-600 text-white border-none text-sm font-light py-2 px-20 rounded-full cursor-pointer  "
+        >
+          Logout
         </button>
       </div>
     )
