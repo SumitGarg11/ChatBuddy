@@ -7,7 +7,6 @@ import { io } from "socket.io-client";
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 axios.defaults.baseURL = backendUrl;
 
-// Create AuthContext
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -20,70 +19,66 @@ export const AuthProvider = ({ children }) => {
   const checkAuth = async () => {
     try {
       const { data } = await axios.get("/api/auth/check");
-
       if (data.success) {
         setAuthUser(data.user);
         connectSocket(data.user);
       }
     } catch (error) {
-      toast.error(error.message);
+      toast.error("Authentication check failed");
     }
   };
 
-  // Login function to authenticate and store token
+  // Login function
   const login = async (state, credentials) => {
     try {
-      console.log("Sending signup data:", credentials);
       const { data } = await axios.post(`/api/auth/${state}`, credentials);
-
       if (data.success) {
         setAuthUser(data.userData);
         connectSocket(data.userData);
-
         axios.defaults.headers.common["token"] = data.token;
         setToken(data.token);
         localStorage.setItem("token", data.token);
-
         toast.success(data.message);
       } else {
-        toast.success(data.message);
+        toast.error(data.message || "Login failed");
       }
     } catch (error) {
-      console.log(error.message);
+      toast.error(error.message || "Login error");
     }
   };
 
-  // Logout function to handle user logout and socket disconnection
+  // Logout function
   const logout = async () => {
-    console.log("Logout clicked");
     localStorage.removeItem("token");
     setToken(null);
     setAuthUser(null);
     setOnlineUsers([]);
     axios.defaults.headers.common["token"] = null;
+    socket?.disconnect();
     toast.success("Logged out successfully");
-    socket.disconnect();
   };
-  // Update profile function to handle user profile updates
+
+  // Update profile
   const updateProfile = async (body) => {
     try {
       const { data } = await axios.put("/api/auth/update-profile", body);
       if (data.success) {
         setAuthUser(data.user);
         toast.success("Profile updated successfully");
+      } else {
+        toast.error("Profile update failed");
       }
     } catch (error) {
-      toast.error(error.message);
+      toast.error("Failed to update profile");
     }
   };
-  // Connect socket and listen for online users
+
+  // Socket connection
   const connectSocket = (userData) => {
     if (!userData || socket?.connected) return;
 
     const newSocket = io(backendUrl, {
-      query: {
-        userId: userData._id,
-      },
+      query: { userId: userData._id },
     });
 
     newSocket.connect();
@@ -94,7 +89,7 @@ export const AuthProvider = ({ children }) => {
     });
   };
 
-  // Initialize token and auth check on mount
+  // On app load
   useEffect(() => {
     if (token) {
       axios.defaults.headers.common["token"] = token;
@@ -102,7 +97,6 @@ export const AuthProvider = ({ children }) => {
     checkAuth();
   }, []);
 
-  // Provide context values
   const value = {
     axios,
     authUser,
