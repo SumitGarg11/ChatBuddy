@@ -64,6 +64,18 @@ export const AuthProvider = ({ children }) => {
     toast.success("Logged out successfully");
     socket.disconnect();
   }
+  // Update profile function to handle user profile updates
+  const updateProfile = async (body) => {
+    try {
+       const {data} = await axios.put("/api/auth/update-profile", body);
+       if(data.success) {
+        setAuthUser(data.user);
+        toast.success("Profile updated successfully")
+       }
+    } catch ( error ) {
+      toast.error(error.message)
+    }
+  }
   // Connect socket and listen for online users
   const connectSocket = (userData) => {
     if (!userData || socket?.connected) return;
