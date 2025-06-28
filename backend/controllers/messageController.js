@@ -6,7 +6,8 @@
 import cloudinary from "../lib/cloudinary.js";
 import Message from "../models/Message.js";
 import User from "../models/User.js";
-import {io, userSocketMap} from "..server.js"
+import { io, userSocketMap } from "../server.js";
+// import {io, userSocketMap} from "..server.js"
 export const getUsersForSidebar = async (req, res) => {
     try {
         const userId = req.user._id;
@@ -30,7 +31,7 @@ export const getUsersForSidebar = async (req, res) => {
 }
 
 // Get ALL messages for selected user 
-export const getMessages = async (req, res) {
+export const getMessages = async (req, res) => {
     try {
 
         const {id:selectedUserId} = req.params;

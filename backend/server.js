@@ -40,11 +40,12 @@ app.use(express.json({ limit: "4mb" }));
 app.use(cors());
 
 app.use("/api/status", (req, res) => res.send("server is live"));
-app.use("api/auth",userRouter);
-app.use("api/messages",messageRouter);
+app.use("/api/auth", userRouter);      
+app.use("/api/messages", messageRouter); 
+
 // Connect to MongoDB 
 await connectDB();
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, function () {
-  console.log("Server is running on Port on ", PORT);
+  console.log("Server is running on Port ", PORT);
 });
