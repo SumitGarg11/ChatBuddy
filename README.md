@@ -169,4 +169,4 @@ This project is licensed under the **MIT License**.
 ## 📞 Contact
 
 Made with ❤️ by **Sumit Garg**  
-📫 [LinkedIn](https://linkedin.com/in/sumitgarg11)
+📫 [LinkedIn](https://www.linkedin.com/in/sumit-garg---/)
