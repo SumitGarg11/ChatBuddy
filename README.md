@@ -160,11 +160,7 @@ Contributions are welcome! If you find a bug or have a feature request, feel fre
 
 ---
 
-## 📄 License
 
-This project is licensed under the **MIT License**.
-
----
 
 ## 📞 Contact
 
